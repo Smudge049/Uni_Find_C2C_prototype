@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Register - Bruh</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="container">
     <h2>Register</h2>
@@ -21,20 +23,26 @@
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-//await pauses the execution of the async function it’s in
-      const res = await fetch('/register', { /*making a request to the server,make an HTTP request,
-        wait for the response, and when you come back,
-         give me a Promise containing the response. */
+      const msg = document.getElementById('msg');
+
+      // Validate email domain
+      const kuRegex = /^[a-zA-Z0-9._%+-]+@student\.ku\.edu\.np$/;
+      if (!kuRegex.test(email)) {
+        msg.innerText = "Email must end with @student.ku.edu.np";
+        return; // stop registration
+      }
+
+      // Proceed with server request
+      const res = await fetch('/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }, /*headers: { 'Content-Type': 'application/json' } → 
-        important: informs the server how to parse the body. express.json() (or bodyParser.json())
-         will check this header to parse the request.*/
-        body: JSON.stringify({ name, email, password }) //HTTP bodies are bytes/text.
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
       });
 
       const text = await res.text();
-      document.getElementById('msg').innerText = text;
+      msg.innerText = text;
     }
   </script>
 </body>
+
 </html>
