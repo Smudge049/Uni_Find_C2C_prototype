@@ -352,7 +352,6 @@ app.get('/api/items', async (req, res) => {
 });
 
 // Get Item Details
-// Get Item Details
 app.get('/api/items/:id', async (req, res) => {
   try {
     const [rows] = await db.execute(
@@ -366,6 +365,43 @@ app.get('/api/items/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Error fetching item details');
+  }
+});
+
+// Buy Item
+app.post('/api/items/:id/buy', authenticateToken, async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    const userId = req.user.id;
+    const quantity = 1; // Default to 1 for now
+
+    // 1. Check if item exists and is available
+    const [items] = await db.execute('SELECT * FROM items WHERE id = ?', [itemId]);
+    if (items.length === 0) return res.status(404).json({ error: 'Item not found' });
+
+    const item = items[0];
+    if (item.status.toLowerCase() !== 'available') {
+      return res.status(400).json({ error: 'Item is not available for purchase.' });
+    }
+
+    if (item.user_id === userId) {
+      return res.status(400).json({ error: 'You cannot buy your own item.' });
+    }
+
+    // 2. Create Booking
+    await db.execute(
+      'INSERT INTO bookings (item_id, user_id, booked_quantity, status) VALUES (?, ?, ?, ?)',
+      [itemId, userId, quantity, 'confirmed']
+    );
+
+    // 3. Update Item Status
+    await db.execute('UPDATE items SET status = ? WHERE id = ?', ['sold', itemId]);
+
+    res.json({ message: 'Item purchased successfully!', itemId: itemId });
+
+  } catch (err) {
+    console.error('Buy Item error:', err);
+    res.status(500).json({ error: 'Failed to purchase item.' });
   }
 });
 

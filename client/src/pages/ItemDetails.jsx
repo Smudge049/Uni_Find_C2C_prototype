@@ -9,6 +9,7 @@ export default function ItemDetails() {
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [buying, setBuying] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -26,6 +27,29 @@ export default function ItemDetails() {
         };
         fetchItem();
     }, [id]);
+
+    const handleBuy = async () => {
+        if (!user) {
+            alert('Please login to purchase items');
+            navigate('/login', { state: { from: `/items/${id}` } });
+            return;
+        }
+
+        if (window.confirm('Are you sure you want to buy this item?')) {
+            setBuying(true);
+            try {
+                const { data } = await api.post(`/items/${id}/buy`);
+                alert(data.message || 'Purchase successful!');
+                // Update local item state to reflect sold status
+                setItem(prev => ({ ...prev, status: 'sold' }));
+            } catch (err) {
+                console.error('Buy error:', err);
+                alert(err.response?.data?.error || 'Failed to purchase item');
+            } finally {
+                setBuying(false);
+            }
+        }
+    };
 
     if (loading) return <div className="p-8 text-center">Loading details...</div>;
     if (error || !item) return <div className="p-8 text-center text-red-500">{error || 'Item not found'}</div>;
@@ -97,19 +121,35 @@ export default function ItemDetails() {
                                     <p className="text-sm text-gray-500">{item.seller_email}</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => {
-                                    if (!user) {
-                                        alert('Please login to contact the seller');
-                                        navigate('/login', { state: { from: `/items/${id}` } });
-                                    } else {
-                                        window.location.href = `mailto:${item.seller_email}`;
-                                    }
-                                }}
-                                className="flex items-center justify-center w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200"
-                            >
-                                <Mail className="h-5 w-5 mr-2" /> Email Seller
-                            </button>
+
+                            {item.status?.toLowerCase() === 'sold' ? (
+                                <div className="w-full py-3 bg-gray-300 text-gray-700 rounded-lg font-medium text-center">
+                                    Sold Out
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    <button
+                                        onClick={handleBuy}
+                                        disabled={buying}
+                                        className="flex items-center justify-center w-full py-3 bg-green-600 hover:bg-green-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {buying ? 'Processing...' : 'Buy Now'}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (!user) {
+                                                alert('Please login to contact the seller');
+                                                navigate('/login', { state: { from: `/items/${id}` } });
+                                            } else {
+                                                window.location.href = `mailto:${item.seller_email}`;
+                                            }
+                                        }}
+                                        className="flex items-center justify-center w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200"
+                                    >
+                                        <Mail className="h-5 w-5 mr-2" /> Email Seller
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
