@@ -430,11 +430,57 @@ app.post('/api/items/:id/buy', authenticateToken, async (req, res) => {
   }
 });
 
-// 3. Lost & Found
+// 4. Comments
 
-// 3. Lost & Found (Missing from DB Schema)
-// app.post('/api/lost-found', ...); // Disabled
-// app.get('/api/lost-found', ...); // Disabled
+// Get comments for an item
+app.get('/api/items/:id/comments', async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    const [comments] = await db.execute(
+      `SELECT comments.*, users.name as user_name, users.picture as user_picture 
+       FROM comments 
+       JOIN users ON comments.user_id = users.id 
+       WHERE item_id = ? 
+       ORDER BY created_at ASC`,
+      [itemId]
+    );
+    res.json(comments);
+  } catch (err) {
+    console.error('Error fetching comments:', err);
+    res.status(500).json({ error: 'Failed to fetch comments' });
+  }
+});
+
+// Post a comment or reply
+app.post('/api/comments', authenticateToken, async (req, res) => {
+  try {
+    const { item_id, comment_text, parent_comment_id } = req.body;
+    const userId = req.user.id;
+
+    if (!comment_text || comment_text.trim() === '') {
+      return res.status(400).json({ error: 'Comment text is required' });
+    }
+
+    const [result] = await db.execute(
+      'INSERT INTO comments (item_id, user_id, comment_text, parent_comment_id) VALUES (?, ?, ?, ?)',
+      [item_id, userId, comment_text, parent_comment_id || null]
+    );
+
+    // Fetch the inserted comment with user data to return
+    const [newComment] = await db.execute(
+      `SELECT comments.*, users.name as user_name, users.picture as user_picture 
+       FROM comments 
+       JOIN users ON comments.user_id = users.id 
+       WHERE comments.id = ?`,
+      [result.insertId]
+    );
+
+    res.status(201).json(newComment[0]);
+  } catch (err) {
+    console.error('Error posting comment:', err);
+    res.status(500).json({ error: 'Failed to post comment' });
+  }
+});
 
 
 app.listen(PORT, () => {
