@@ -14,6 +14,7 @@ export default function ItemDetails() {
     const [replyTo, setReplyTo] = useState(null); // id of comment being replied to
     const [replyText, setReplyText] = useState('');
     const [submittingComment, setSubmittingComment] = useState(false);
+    const [buying, setBuying] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -45,7 +46,7 @@ export default function ItemDetails() {
 
         setSubmittingComment(true);
         try {
-            const { data } = await api.post('/api/comments', {
+            const { data } = await api.post('/comments', {
                 item_id: id,
                 comment_text: newComment
             });
@@ -68,7 +69,7 @@ export default function ItemDetails() {
 
         setSubmittingComment(true);
         try {
-            const { data } = await api.post('/api/comments', {
+            const { data } = await api.post('/comments', {
                 item_id: id,
                 comment_text: replyText,
                 parent_comment_id: parentId
