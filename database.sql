@@ -59,15 +59,3 @@ CREATE TABLE bookings (
   CONSTRAINT bookings_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE messages (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    item_id INT NOT NULL,
-    sender_id CHAR(36) NOT NULL,
-    receiver_id CHAR(36) NOT NULL,
-    message_text TEXT NOT NULL,
-    read_status ENUM('unread','read') DEFAULT 'unread',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
-    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
-);
