@@ -31,13 +31,16 @@ export default function Home() {
         <div className="space-y-12">
             {/* Hero Section */}
             <section className="bg-blue-600 rounded-2xl p-8 md:p-12 text-center text-white relative overflow-hidden">
-                <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-                    <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-                        Welcome to UNI-find
-                    </h1>
-                    <p className="text-lg text-blue-100">
-                        Where Students Connect, Trade, and Find.
-                    </p>
+                <div className="relative z-10 max-w-2xl mx-auto space-y-6 flex flex-col items-center">
+                    <img src="/logo.png" alt="UNI-find Logo" className="h-24 w-24 md:h-32 md:w-32 object-contain mx-auto" />
+                    <div className="space-y-2">
+                        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+                            Welcome to UNI-find
+                        </h1>
+                        <p className="text-lg text-blue-100">
+                            Where Students Connect, Trade, and Find.
+                        </p>
+                    </div>
                 </div>
             </section>
 

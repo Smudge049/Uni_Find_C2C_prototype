@@ -45,8 +45,8 @@ export default function Register() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
                 <div className="text-center">
-                    <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4">
-                        <UserPlus className="h-8 w-8 text-white" />
+                    <div className="mx-auto h-20 w-20 flex items-center justify-center mb-4">
+                        <img src="/logo.png" alt="UNI-find Logo" className="h-full w-full object-contain" />
                     </div>
                     <h2 className="text-3xl font-extrabold text-gray-900">
                         Join UniFind
