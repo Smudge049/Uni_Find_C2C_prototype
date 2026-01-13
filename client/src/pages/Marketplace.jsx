@@ -4,7 +4,7 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 import ItemCard from '../components/ItemCard';
 import api from '../api';
 
-const CATEGORIES = ['All', 'Books', 'Electronics', 'Stationery', 'Clothing', 'Furniture', 'Other'];
+const CATEGORIES = ['All', 'Books', 'Electronics', 'Stationery', 'Clothing', 'Furniture', 'Sports', 'Other'];
 
 export default function Marketplace() {
     const [items, setItems] = useState([]);

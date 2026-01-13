@@ -3,7 +3,7 @@ import { Upload, X } from 'lucide-react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
-const CATEGORIES = ['Books', 'Electronics', 'Stationery', 'Clothing', 'Furniture', 'Other'];
+const CATEGORIES = ['Books', 'Electronics', 'Stationery', 'Clothing', 'Furniture', 'Sports', 'Other'];
 
 export default function AddItem() {
     const [images, setImages] = useState([]); // Preview URLs

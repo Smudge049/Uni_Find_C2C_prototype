@@ -346,7 +346,7 @@ app.post('/api/items', authenticateToken, upload.array('images', 5), async (req,
 
     const [result] = await db.execute(
       'INSERT INTO items (uploaded_by, title, description, price, category, image_url) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, title, description, price, category, imageUrl]
+      [userId, title, description, price, category.toLowerCase(), imageUrl]
     );
 
     res.status(201).json({ id: result.insertId, message: 'Item listed successfully' });
@@ -381,7 +381,7 @@ app.put('/api/items/:id', authenticateToken, async (req, res) => {
     // 2. Update item
     await db.execute(
       'UPDATE items SET title = ?, description = ?, price = ?, category = ? WHERE id = ?',
-      [title, description, price, category, itemId]
+      [title, description, price, category.toLowerCase(), itemId]
     );
 
     console.log('[DEBUG] Item updated successfully');

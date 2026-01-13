@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api';
 import { User, MapPin, Mail, Edit, Package, CheckCircle, Heart, LogOut, X } from 'lucide-react';
 import ItemCard from '../components/ItemCard';

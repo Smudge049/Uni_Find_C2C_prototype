@@ -10,6 +10,7 @@ const CATEGORIES = [
     { name: 'Electronics', icon: '💻' },
     { name: 'Furniture', icon: '🪑' },
     { name: 'Clothing', icon: '👕' },
+    { name: 'Sports', icon: '⚽' },
     { name: 'Other', icon: '📦' },
 ];
 

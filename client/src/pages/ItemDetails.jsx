@@ -498,6 +498,7 @@ export default function ItemDetails() {
                                         <option value="stationery">Stationery</option>
                                         <option value="electronics">Electronics</option>
                                         <option value="furniture">Furniture</option>
+                                        <option value="sports">Sports</option>
                                         <option value="clothing">Clothing</option>
                                         <option value="other">Other</option>
                                     </select>
