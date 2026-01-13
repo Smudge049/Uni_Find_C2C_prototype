@@ -289,7 +289,18 @@ export default function Profile() {
                 ) : displayedItems.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {displayedItems.map(item => (
-                            <ItemCard key={item.id} item={item} />
+                            <div key={item.id} className="relative group">
+                                <ItemCard item={item} />
+                                {activeTab === 'active' && (
+                                    <Link
+                                        to={`/items/${item.id}?edit=true`}
+                                        className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm p-2 rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600 hover:text-white text-blue-600"
+                                        title="Edit Listing"
+                                    >
+                                        <Edit className="h-4 w-4" />
+                                    </Link>
+                                )}
+                            </div>
                         ))}
                     </div>
                 ) : (

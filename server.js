@@ -356,6 +356,42 @@ app.post('/api/items', authenticateToken, upload.array('images', 5), async (req,
   }
 });
 
+// Update Item
+app.put('/api/items/:id', authenticateToken, async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    const userId = req.user.id;
+    const { title, description, price, category } = req.body;
+    console.log(`[DEBUG] Update Item Request - ID: ${itemId}, User: ${userId}`);
+    console.log('[DEBUG] Form data:', { title, description, price, category });
+
+    // 1. Check ownership
+    const [items] = await db.execute('SELECT * FROM items WHERE id = ?', [itemId]);
+    if (items.length === 0) {
+      console.log('[DEBUG] Update Failed: Item not found');
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    console.log(`[DEBUG] Item uploader: ${items[0].uploaded_by}`);
+    if (items[0].uploaded_by !== userId) {
+      console.log('[DEBUG] Update Failed: Unauthorized');
+      return res.status(403).json({ error: 'You are not authorized to edit this item.' });
+    }
+
+    // 2. Update item
+    await db.execute(
+      'UPDATE items SET title = ?, description = ?, price = ?, category = ? WHERE id = ?',
+      [title, description, price, category, itemId]
+    );
+
+    console.log('[DEBUG] Item updated successfully');
+    res.json({ message: 'Item updated successfully' });
+  } catch (err) {
+    console.error('Update item error:', err);
+    res.status(500).json({ error: 'Failed to update item' });
+  }
+});
+
 // Get All Items
 // Get All Items
 app.get('/api/items', async (req, res) => {

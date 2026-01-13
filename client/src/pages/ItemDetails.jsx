@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, ArrowLeft, MessageSquare, Send, CornerDownRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../api';
@@ -16,14 +16,34 @@ export default function ItemDetails() {
     const [submittingComment, setSubmittingComment] = useState(false);
     const [buying, setBuying] = useState(false);
     const [reserving, setReserving] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState({
+        title: '',
+        description: '',
+        price: '',
+        category: ''
+    });
     const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const fetchItem = async () => {
             try {
                 const itemRes = await api.get(`/items/${id}`);
                 setItem(itemRes.data);
+
+                // Auto-open edit if query param is present and user is owner
+                const searchParams = new URLSearchParams(location.search);
+                if (searchParams.get('edit') === 'true' && user && user.id === itemRes.data.uploaded_by) {
+                    setEditForm({
+                        title: itemRes.data.title,
+                        description: itemRes.data.description,
+                        price: itemRes.data.price,
+                        category: itemRes.data.category
+                    });
+                    setIsEditing(true);
+                }
 
                 const commentsRes = await api.get(`/items/${id}/comments`);
                 setComments(commentsRes.data);
@@ -35,7 +55,7 @@ export default function ItemDetails() {
             }
         };
         fetchItem();
-    }, [id]);
+    }, [id, location.search, user]);
 
     const handlePostComment = async (e) => {
         e.preventDefault();
@@ -146,6 +166,32 @@ export default function ItemDetails() {
         }
     };
 
+    const handleEditItem = (e) => {
+        e.preventDefault();
+        setEditForm({
+            title: item.title,
+            description: item.description,
+            price: item.price,
+            category: item.category
+        });
+        setIsEditing(true);
+    };
+
+    const handleUpdateItem = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put(`/items/${id}`, editForm);
+            alert('Item updated successfully!');
+            // Refresh item data
+            const itemRes = await api.get(`/items/${id}`);
+            setItem(itemRes.data);
+            setIsEditing(false);
+        } catch (err) {
+            console.error('Update item error:', err);
+            alert(err.response?.data?.error || 'Failed to update item');
+        }
+    };
+
     if (loading) return <div className="p-8 text-center">Loading details...</div>;
     if (error || !item) return <div className="p-8 text-center text-red-500">{error || 'Item not found'}</div>;
 
@@ -233,8 +279,16 @@ export default function ItemDetails() {
                                     )}
                                 </div>
                             ) : user && user.id === item.uploaded_by ? (
-                                <div className="w-full py-3 bg-blue-100 text-blue-700 rounded-lg font-medium text-center">
-                                    Your Item
+                                <div className="space-y-4">
+                                    <div className="w-full py-3 bg-blue-100 text-blue-700 rounded-lg font-medium text-center">
+                                        Your Item
+                                    </div>
+                                    <button
+                                        onClick={handleEditItem}
+                                        className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition active:scale-95"
+                                    >
+                                        Edit Listing
+                                    </button>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -396,6 +450,78 @@ export default function ItemDetails() {
                     </div>
                 </div>
             </div>
+            {/* Edit Item Modal */}
+            {isEditing && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit Listing</h2>
+                        <form onSubmit={handleUpdateItem} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={editForm.title}
+                                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea
+                                    required
+                                    rows="4"
+                                    value={editForm.description}
+                                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                ></textarea>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Price (Rs)</label>
+                                    <input
+                                        type="number"
+                                        required
+                                        value={editForm.price}
+                                        onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                    <select
+                                        value={editForm.category}
+                                        onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    >
+                                        <option value="books">Books</option>
+                                        <option value="stationery">Stationery</option>
+                                        <option value="electronics">Electronics</option>
+                                        <option value="furniture">Furniture</option>
+                                        <option value="clothing">Clothing</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="flex gap-4 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(false)}
+                                    className="flex-1 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }
