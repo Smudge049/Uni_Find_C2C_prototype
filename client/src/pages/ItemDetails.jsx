@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Mail, MapPin, ArrowLeft, Heart, Share2, MessageSquare, Send, CornerDownRight } from 'lucide-react';
+import { MapPin, ArrowLeft, MessageSquare, Send, CornerDownRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -148,14 +148,6 @@ export default function ItemDetails() {
                                     {new Date(item.created_at).toLocaleDateString()}
                                 </div>
                             </div>
-                            <div className="flex space-x-2">
-                                <button className="p-2 rounded-full hover:bg-gray-100 text-gray-400 hover:text-red-500">
-                                    <Heart className="h-6 w-6" />
-                                </button>
-                                <button className="p-2 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-600">
-                                    <Share2 className="h-6 w-6" />
-                                </button>
-                            </div>
                         </div>
 
                         <div className="mb-6">
@@ -196,19 +188,6 @@ export default function ItemDetails() {
                                         className="flex items-center justify-center w-full py-3 bg-green-600 hover:bg-green-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {buying ? 'Processing...' : 'Buy Now'}
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            if (!user) {
-                                                alert('Please login to contact the seller');
-                                                navigate('/login', { state: { from: `/items/${id}` } });
-                                            } else {
-                                                window.location.href = `mailto:${item.seller_email}`;
-                                            }
-                                        }}
-                                        className="flex items-center justify-center w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200"
-                                    >
-                                        <Mail className="h-5 w-5 mr-2" /> Email Seller
                                     </button>
                                 </div>
                             )}
@@ -354,6 +333,6 @@ export default function ItemDetails() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

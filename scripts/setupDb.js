@@ -50,13 +50,14 @@ async function setup() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
+    `);
 
-        console.log('Database setup complete!');
-        await db.end();
-    } catch (err) {
-        console.error('Error setting up database:', err);
-        process.exit(1);
-    }
+    console.log('Database setup complete!');
+    await db.end();
+  } catch (err) {
+    console.error('Error setting up database:', err);
+    process.exit(1);
+  }
 }
 
 setup();
