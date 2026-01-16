@@ -107,16 +107,22 @@ export default function ItemDetails() {
     };
 
     const handleConfirmSale = async () => {
-        if (!window.confirm('Are you sure you want to mark this item as sold? This will confirm the booking.')) return;
+        if (!window.confirm('Are you sure you want to mark this item as sold?')) return;
 
         setConfirming(true);
         try {
-            await api.post(`/bookings/${item.booking_id}/confirm`);
+            if (item.status?.toLowerCase() === 'reserved') {
+                // Confirm a specific reservation
+                await api.post(`/bookings/${item.booking_id}/confirm`);
+            } else {
+                // Direct mark as sold
+                await api.post(`/items/${item.id}/sold`);
+            }
             alert('Item marked as sold successfully!');
             setItem(prev => ({ ...prev, status: 'sold' }));
         } catch (err) {
             console.error('Confirm error:', err);
-            alert(err.response?.data?.error || 'Failed to confirm sale');
+            alert(err.response?.data?.error || 'Failed to mark item as sold');
         } finally {
             setConfirming(false);
         }
@@ -286,8 +292,15 @@ export default function ItemDetails() {
                                         Your Item
                                     </div>
                                     <button
+                                        onClick={handleConfirmSale}
+                                        disabled={confirming}
+                                        className="w-full py-3 bg-green-600 hover:bg-green-700 active:scale-95 text-white rounded-lg font-medium transition disabled:opacity-50"
+                                    >
+                                        {confirming ? 'Processing...' : 'Mark as Sold'}
+                                    </button>
+                                    <button
                                         onClick={handleEditItem}
-                                        className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition active:scale-95"
+                                        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition active:scale-95"
                                     >
                                         Edit Listing
                                     </button>

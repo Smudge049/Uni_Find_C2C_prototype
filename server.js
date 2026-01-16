@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 // Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
-app.use('/api/profile', profileRoutes);
+app.use('/api', profileRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/bookings', bookingRoutes);
 

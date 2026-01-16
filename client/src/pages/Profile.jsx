@@ -37,8 +37,13 @@ export default function Profile() {
 
     const fetchProfileData = async () => {
         try {
-            // Fetch User Details
-            const userRes = await api.get('/dashboard');
+            // Fetch multiple datasets concurrently for better performance
+            const [userRes, itemsRes, purchasesRes] = await Promise.all([
+                api.get('/dashboard'),
+                api.get('/my-items'),
+                api.get('/my-purchases')
+            ]);
+
             if (userRes.data.user) {
                 const profilePic = userRes.data.user.picture
                     ? `http://localhost:3000${userRes.data.user.picture}`
@@ -54,12 +59,7 @@ export default function Profile() {
                 setImagePreview(profilePic);
             }
 
-            // Fetch Items
-            const itemsRes = await api.get('/my-items');
             setMyItems(itemsRes.data);
-
-            // Fetch Purchases
-            const purchasesRes = await api.get('/my-purchases');
             setMyPurchases(purchasesRes.data);
         } catch (error) {
             console.error('Error fetching profile data:', error);

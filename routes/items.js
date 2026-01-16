@@ -131,4 +131,51 @@ router.post('/:id/reserve', authenticateToken, async (req, res) => {
     }
 });
 
+// Mark Item as Sold (Directly by Seller)
+router.post('/:id/sold', authenticateToken, async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const userId = req.user.id;
+
+        const [items] = await db.execute('SELECT * FROM items WHERE id = ?', [itemId]);
+        if (items.length === 0) return res.status(404).json({ error: 'Item not found' });
+
+        const item = items[0];
+        if (item.uploaded_by !== userId) {
+            return res.status(403).json({ error: 'Only the seller can mark this item as sold.' });
+        }
+
+        if (item.status === 'sold') {
+            return res.status(400).json({ error: 'Item is already marked as sold.' });
+        }
+
+        // Update item status to sold
+        await db.execute('UPDATE items SET status = "sold" WHERE id = ?', [itemId]);
+
+        res.json({ message: 'Item marked as sold successfully!' });
+    } catch (err) {
+        console.error('Mark Sold error:', err);
+        res.status(500).json({ error: 'Failed to mark item as sold.' });
+    }
+});
+
+// Get comments for an item
+router.get('/:id/comments', async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const [comments] = await db.execute(
+            `SELECT comments.*, users.name as user_name, users.picture as user_picture 
+       FROM comments 
+       JOIN users ON comments.user_id = users.id 
+       WHERE item_id = ? 
+       ORDER BY created_at ASC`,
+            [itemId]
+        );
+        res.json(comments);
+    } catch (err) {
+        console.error('Error fetching comments:', err);
+        res.status(500).json({ error: 'Failed to fetch comments' });
+    }
+});
+
 module.exports = router;

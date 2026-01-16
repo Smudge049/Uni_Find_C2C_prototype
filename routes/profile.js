@@ -5,7 +5,7 @@ const { authenticateToken } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
 // Update Profile
-router.put('/', authenticateToken, upload.single('avatar'), async (req, res) => {
+router.put('/profile', authenticateToken, upload.single('avatar'), async (req, res) => {
     try {
         const { name } = req.body;
         const userId = req.user.id;
