@@ -99,39 +99,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Buy Item
-router.post('/:id/buy', authenticateToken, async (req, res) => {
-    try {
-        const itemId = req.params.id;
-        const userId = req.user.id;
-
-        const [items] = await db.execute('SELECT * FROM items WHERE id = ?', [itemId]);
-        if (items.length === 0) return res.status(404).json({ error: 'Item not found' });
-
-        const item = items[0];
-        if (item.status.toLowerCase() !== 'available') {
-            return res.status(400).json({ error: 'Item is not available for purchase.' });
-        }
-
-        if (item.uploaded_by === userId) {
-            return res.status(400).json({ error: 'You cannot buy your own item.' });
-        }
-
-        await db.execute(
-            'INSERT INTO bookings (item_id, user_id, booked_quantity, status) VALUES (?, ?, ?, ?)',
-            [itemId, userId, 1, 'confirmed']
-        );
-
-        await db.execute('UPDATE items SET status = ? WHERE id = ?', ['sold', itemId]);
-
-        res.json({ message: 'Item purchased successfully!', itemId: itemId });
-
-    } catch (err) {
-        console.error('Buy Item error:', err);
-        res.status(500).json({ error: 'Failed to purchase item.' });
-    }
-});
-
 // Reserve Item
 router.post('/:id/reserve', authenticateToken, async (req, res) => {
     try {

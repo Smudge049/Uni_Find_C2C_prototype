@@ -14,8 +14,8 @@ export default function ItemDetails() {
     const [replyTo, setReplyTo] = useState(null); // id of comment being replied to
     const [replyText, setReplyText] = useState('');
     const [submittingComment, setSubmittingComment] = useState(false);
-    const [buying, setBuying] = useState(false);
     const [reserving, setReserving] = useState(false);
+    const [confirming, setConfirming] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({
         title: '',
@@ -106,26 +106,19 @@ export default function ItemDetails() {
         }
     };
 
-    const handleBuy = async () => {
-        if (!user) {
-            alert('Please login to purchase items');
-            navigate('/login', { state: { from: `/items/${id}` } });
-            return;
-        }
+    const handleConfirmSale = async () => {
+        if (!window.confirm('Are you sure you want to mark this item as sold? This will confirm the booking.')) return;
 
-        if (window.confirm('Are you sure you want to buy this item?')) {
-            setBuying(true);
-            try {
-                const { data } = await api.post(`/items/${id}/buy`);
-                alert(data.message || 'Purchase successful!');
-                // Update local item state to reflect sold status
-                setItem(prev => ({ ...prev, status: 'sold' }));
-            } catch (err) {
-                console.error('Buy error:', err);
-                alert(err.response?.data?.error || 'Failed to purchase item');
-            } finally {
-                setBuying(false);
-            }
+        setConfirming(true);
+        try {
+            await api.post(`/bookings/${item.booking_id}/confirm`);
+            alert('Item marked as sold successfully!');
+            setItem(prev => ({ ...prev, status: 'sold' }));
+        } catch (err) {
+            console.error('Confirm error:', err);
+            alert(err.response?.data?.error || 'Failed to confirm sale');
+        } finally {
+            setConfirming(false);
         }
     };
 
@@ -269,6 +262,15 @@ export default function ItemDetails() {
                                     <div className="w-full py-3 bg-yellow-100 text-yellow-700 rounded-lg font-medium text-center">
                                         Reserved
                                     </div>
+                                    {user && user.id === item.uploaded_by && (
+                                        <button
+                                            onClick={handleConfirmSale}
+                                            disabled={confirming}
+                                            className="w-full py-3 bg-green-600 hover:bg-green-700 active:scale-95 text-white rounded-lg font-medium transition active:scale-95 disabled:opacity-50"
+                                        >
+                                            {confirming ? 'Confirming...' : 'Mark as Sold'}
+                                        </button>
+                                    )}
                                     {(user && (user.id === item.uploaded_by || user.id === item.buyer_id)) && (
                                         <button
                                             onClick={handleCancel}
@@ -293,16 +295,9 @@ export default function ItemDetails() {
                             ) : (
                                 <div className="space-y-4">
                                     <button
-                                        onClick={handleBuy}
-                                        disabled={buying || reserving}
-                                        className="flex items-center justify-center w-full py-3 bg-green-600 hover:bg-green-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {buying ? 'Processing...' : 'Buy Now'}
-                                    </button>
-                                    <button
                                         onClick={handleReserve}
-                                        disabled={buying || reserving}
-                                        className="flex items-center justify-center w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        disabled={reserving}
+                                        className="flex items-center justify-center w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {reserving ? 'Processing...' : 'Reserve Booking'}
                                     </button>
