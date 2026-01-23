@@ -30,6 +30,11 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, name, type, password) => {
         try {
             const { data } = await api.post('/auth/kumail', { email, name, type, password });
+
+            if (data.requiresVerification) {
+                return { success: true, requiresVerification: true, message: data.message };
+            }
+
             localStorage.setItem('token', data.token);
 
             const payload = JSON.parse(atob(data.token.split('.')[1]));
@@ -37,6 +42,20 @@ export const AuthProvider = ({ children }) => {
             return { success: true };
         } catch (err) {
             const errorMessage = err.response?.data?.error || 'Authentication failed';
+            const unverified = err.response?.data?.unverified;
+            return { success: false, message: errorMessage, unverified };
+        }
+    };
+
+    const verifyRegister = async (email, otp) => {
+        try {
+            const { data } = await api.post('/auth/verify-registration', { email, otp });
+            localStorage.setItem('token', data.token);
+            const payload = JSON.parse(atob(data.token.split('.')[1]));
+            setUser(payload);
+            return { success: true, message: data.message };
+        } catch (err) {
+            const errorMessage = err.response?.data?.error || 'Verification failed';
             return { success: false, message: errorMessage };
         }
     };
@@ -57,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, updateUser, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, verifyRegister, updateUser, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );
