@@ -8,9 +8,9 @@ export default function Register() {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const [otp, setOtp] = useState('');
+    const [step, setStep] = useState('form'); // 'form' or 'verify'
+    const { login, verifyRegister } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -18,24 +18,42 @@ export default function Register() {
         setLoading(true);
         setError('');
 
-        if (password !== confirmPassword) {
-            setError('Passwords do not match');
-            setLoading(false);
-            return;
-        }
+        if (step === 'form') {
+            if (password !== confirmPassword) {
+                setError('Passwords do not match');
+                setLoading(false);
+                return;
+            }
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters');
-            setLoading(false);
-            return;
-        }
+            if (password.length < 6) {
+                setError('Password must be at least 6 characters');
+                setLoading(false);
+                return;
+            }
 
-        const res = await login(email, name, 'register', password);
+            const res = await login(email, name, 'register', password);
 
-        if (res.success) {
-            navigate('/profile');
+            if (res.success && res.requiresVerification) {
+                setStep('verify');
+            } else if (res.success) {
+                navigate('/profile');
+            } else {
+                setError(res.message);
+            }
         } else {
-            setError(res.message);
+            // Step: verify
+            if (otp.length !== 6) {
+                setError('Please enter a 6-digit verification code');
+                setLoading(false);
+                return;
+            }
+
+            const res = await verifyRegister(email, otp);
+            if (res.success) {
+                navigate('/profile');
+            } else {
+                setError(res.message);
+            }
         }
 
         setLoading(false);
@@ -52,7 +70,7 @@ export default function Register() {
                         Join UniFind
                     </h2>
                     <p className="mt-3 text-sm text-gray-600">
-                        Create your account with your KU email
+                        {step === 'form' ? 'Create your account with your KU email' : `Verify the code sent to ${email}`}
                     </p>
                 </div>
 
@@ -64,96 +82,131 @@ export default function Register() {
                 )}
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-sm text-blue-800 font-medium mb-2">
-                            📧 KUmail Required
-                        </p>
-                        <p className="text-xs text-blue-700">
-                            Only students with @ku.edu.np or @student.ku.edu.np email addresses can register and access this platform.
-                        </p>
-                    </div>
+                    {step === 'form' ? (
+                        <>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <p className="text-sm text-blue-800 font-medium mb-2">
+                                    📧 KUmail Required
+                                </p>
+                                <p className="text-xs text-blue-700">
+                                    Only students with @ku.edu.np or @student.ku.edu.np email addresses can register and access this platform.
+                                </p>
+                            </div>
 
-                    <div className="space-y-4">
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Your Name
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <UserIcon className="h-5 w-5 text-gray-400" />
+                                        </div>
+                                        <input
+                                            id="name"
+                                            type="text"
+                                            required
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                        KU Email Address
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <Mail className="h-5 w-5 text-gray-400" />
+                                        </div>
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            required
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                            placeholder="your.name@ku.edu.np"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Lock className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                                    Confirm Password
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Lock className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        id="confirmPassword"
+                                        type="password"
+                                        required
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                                Your Name
+                            <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
+                                Verification Code
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <UserIcon className="h-5 w-5 text-gray-400" />
+                                    <Lock className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
-                                    id="name"
+                                    id="otp"
                                     type="text"
                                     required
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
-                                    placeholder="John Doe"
+                                    maxLength={6}
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 text-center tracking-widest text-2xl font-bold"
+                                    placeholder="000000"
                                 />
                             </div>
+                            <p className="mt-4 text-xs text-gray-500 text-center">
+                                Did not receive the code?
+                                <button
+                                    type="button"
+                                    onClick={() => setStep('form')}
+                                    className="ml-1 text-blue-600 font-medium hover:underline"
+                                >
+                                    Try again
+                                </button>
+                            </p>
                         </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                KU Email Address
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="email"
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
-                                    placeholder="your.name@ku.edu.np"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                            Password
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-gray-400" />
-                            </div>
-                            <input
-                                id="password"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
-                                placeholder="••••••••"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                            Confirm Password
-                        </label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-gray-400" />
-                            </div>
-                            <input
-                                id="confirmPassword"
-                                type="password"
-                                required
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
-                                placeholder="••••••••"
-                            />
-                        </div>
-                    </div>
+                    )}
 
 
                     <button
@@ -164,10 +217,10 @@ export default function Register() {
                         {loading ? (
                             <div className="flex items-center gap-2">
                                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                <span>Creating account...</span>
+                                <span>{step === 'form' ? 'Creating account...' : 'Verifying...'}</span>
                             </div>
                         ) : (
-                            'Create Account'
+                            step === 'form' ? 'Create Account' : 'Verify & Join'
                         )}
                     </button>
 
