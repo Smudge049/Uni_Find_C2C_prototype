@@ -24,7 +24,19 @@ export default function Login() {
             const from = location.state?.from || '/profile';
             navigate(from);
         } else {
-            setError(res.message);
+            if (res.unverified) {
+                setError(<>
+                    {res.message}
+                    <button
+                        onClick={() => navigate('/register', { state: { email } })}
+                        className="ml-2 underline font-bold"
+                    >
+                        Verify Now
+                    </button>
+                </>);
+            } else {
+                setError(res.message);
+            }
         }
 
         setLoading(false);

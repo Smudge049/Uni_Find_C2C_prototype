@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserPlus, AlertCircle, Mail, User as UserIcon, Lock } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -12,6 +12,15 @@ export default function Register() {
     const [step, setStep] = useState('form'); // 'form' or 'verify'
     const { login, verifyRegister } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.email) {
+            setEmail(location.state.email);
+            // Optionally auto-trigger OTP if name/password were also there, 
+            // but usually just pre-filling email is enough.
+        }
+    }, [location.state]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
