@@ -8,6 +8,8 @@ import { useAuth } from '../context/AuthContext';
 export default function Profile() {
     const [activeTab, setActiveTab] = useState('active');
 
+    const { logout, refreshUser, user } = useAuth();
+
     // Auth context user is basic payload, we want full profile + stats
     // We'll manage local profile state to update immediately on edit.
     const [profile, setProfile] = useState({
@@ -26,7 +28,6 @@ export default function Profile() {
     const [editName, setEditName] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
-    const { logout, refreshUser, user } = useAuth();
 
 
     useEffect(() => {
