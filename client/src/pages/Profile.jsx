@@ -9,13 +9,12 @@ export default function Profile() {
     const [activeTab, setActiveTab] = useState('active');
 
     // Auth context user is basic payload, we want full profile + stats
-    // But for MVP, Dashboard returns basic user. 
     // We'll manage local profile state to update immediately on edit.
     const [profile, setProfile] = useState({
-        name: 'Loading...',
-        email: '',
+        name: user?.name || 'Loading...',
+        email: user?.email || '',
         faculty: 'Student',
-        avatar: 'https://placehold.co/150x150/3b82f6/ffffff?text=User',
+        avatar: user?.picture ? user.picture : `https://placehold.co/150x150/3b82f6/ffffff?text=${user?.name ? user.name.charAt(0) : 'U'}`,
         location: 'KU, Dhulikhel'
     });
 
@@ -44,7 +43,7 @@ export default function Profile() {
 
             if (userRes.data.user) {
                 const profilePic = userRes.data.user.picture
-                    ? `http://localhost:3000${userRes.data.user.picture}`
+                    ? userRes.data.user.picture
                     : `https://placehold.co/150x150/3b82f6/ffffff?text=${userRes.data.user.name.charAt(0)}`;
 
                 setProfile(prev => ({
@@ -84,7 +83,7 @@ export default function Profile() {
             setProfile(prev => ({
                 ...prev,
                 name: res.data.user.name,
-                avatar: `http://localhost:3000${res.data.user.picture}`
+                avatar: res.data.user.picture
             }));
 
             // Update global context
@@ -137,7 +136,7 @@ export default function Profile() {
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
                     <div className="relative group">
                         <img
-                            src={profile.avatar.startsWith('http') ? profile.avatar : `http://localhost:3000${profile.avatar}`}
+                            src={profile.avatar}
                             alt={profile.name}
                             className="w-32 h-32 rounded-full border-4 border-blue-50 object-cover"
                         />

@@ -41,10 +41,12 @@ router.put('/profile', authenticateToken, upload.single('avatar'), async (req, r
 router.get('/my-items', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
+        console.time(`my-items-${userId}`);
         const [items] = await db.execute(
             'SELECT * FROM items WHERE uploaded_by = ? ORDER BY created_at DESC',
             [userId]
         );
+        console.timeEnd(`my-items-${userId}`);
         res.json(items);
     } catch (err) {
         console.error(err);
@@ -56,10 +58,12 @@ router.get('/my-items', authenticateToken, async (req, res) => {
 // Get Dashboard Data
 router.get('/dashboard', authenticateToken, async (req, res) => {
     try {
+        console.time(`dashboard-${req.user.id}`);
         const [users] = await db.execute(
             'SELECT id, name, email, picture FROM users WHERE id = ?',
             [req.user.id]
         );
+        console.timeEnd(`dashboard-${req.user.id}`);
         if (users.length > 0) {
             res.json({ message: `Welcome ${req.user.name}`, user: users[0] });
         } else {
