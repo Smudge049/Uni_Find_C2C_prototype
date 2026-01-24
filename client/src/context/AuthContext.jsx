@@ -75,16 +75,8 @@ export const AuthProvider = ({ children }) => {
         setUser(prev => ({ ...prev, ...userData }));
     };
 
-    const refreshAuth = (newToken) => {
-        if (newToken) {
-            localStorage.setItem('token', newToken);
-            const payload = JSON.parse(atob(newToken.split('.')[1]));
-            setUser(payload);
-        }
-    };
-
     return (
-        <AuthContext.Provider value={{ user, login, logout, verifyRegister, updateUser, refreshAuth, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, verifyRegister, updateUser, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

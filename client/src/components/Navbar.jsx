@@ -50,13 +50,13 @@ export default function Navbar() {
 
                         {user ? (
                             <>
-                                <Link to="/sell" className="flex items-center space-x-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 active:scale-95 transition-all duration-200 order-1">
+                                <Link to="/sell" className="flex items-center space-x-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 active:scale-95 transition-all duration-200">
                                     <PlusCircle className="h-4 w-4" />
-                                    <span>Post Ad</span>
+                                    <span>Post Item</span>
                                 </Link>
 
                                 {/* User Profile Dropdown */}
-                                <div className="relative order-2">
+                                <div className="relative">
                                     <button
                                         onClick={() => setShowDropdown(!showDropdown)}
                                         className="flex items-center space-x-2 focus:outline-none"

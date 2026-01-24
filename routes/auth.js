@@ -55,7 +55,7 @@ router.post('/kumail', async (req, res) => {
 
         // Check if user exists
         const [existingUsers] = await db.execute(
-            'SELECT id, email, name, password, picture, is_verified FROM users WHERE email = ?',
+            'SELECT id, email, name, password, is_verified FROM users WHERE email = ?',
             [email]
         );
 
@@ -129,7 +129,7 @@ router.post('/kumail', async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user.id, email: user.email, name: user.name, picture: user.picture },
+            { id: user.id, email: user.email, name: user.name },
             JWT_SECRET,
             { expiresIn: '24h' }
         );
@@ -137,7 +137,7 @@ router.post('/kumail', async (req, res) => {
         // Return user without password
         res.json({
             token,
-            user: { id: user.id, name: user.name, email: user.email, picture: user.picture }
+            user: { id: user.id, name: user.name, email: user.email }
         });
     } catch (err) {
         console.error('Auth error:', err);
@@ -229,7 +229,7 @@ router.post('/verify-registration', async (req, res) => {
         const { email, otp } = req.body;
 
         const [users] = await db.execute(
-            'SELECT id, name, email, picture, verification_otp, verification_otp_expires FROM users WHERE email = ?',
+            'SELECT id, name, email, verification_otp, verification_otp_expires FROM users WHERE email = ?',
             [email]
         );
 
@@ -253,14 +253,14 @@ router.post('/verify-registration', async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user.id, email: user.email, name: user.name, picture: user.picture },
+            { id: user.id, email: user.email, name: user.name },
             JWT_SECRET,
             { expiresIn: '24h' }
         );
 
         res.json({
             token,
-            user: { id: user.id, name: user.name, email: user.email, picture: user.picture },
+            user: { id: user.id, name: user.name, email: user.email },
             message: 'Email verified successfully!'
         });
 
