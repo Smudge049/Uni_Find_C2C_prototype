@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import { User, MapPin, Mail, Edit, Package, CheckCircle, Heart, LogOut, X } from 'lucide-react';
+import { User, Mail, Edit, Package, CheckCircle, Heart, LogOut, X } from 'lucide-react';
 import ItemCard from '../components/ItemCard';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -19,7 +19,7 @@ export default function Profile() {
         email: user?.email || '',
         faculty: 'Student',
         avatar: user?.picture ? user.picture : `https://placehold.co/150x150/3b82f6/ffffff?text=${user?.name ? user.name.charAt(0) : 'U'}`,
-        
+
     });
 
     const [myItems, setMyItems] = useState([]);
@@ -171,9 +171,6 @@ export default function Profile() {
                         <div className="flex flex-col md:flex-row gap-4 items-center justify-center md:justify-start text-gray-500">
                             <div className="flex items-center">
                                 <Mail className="h-4 w-4 mr-2" /> {profile.email}
-                            </div>
-                            <div className="flex items-center">
-                                <MapPin className="h-4 w-4 mr-2" /> {profile.location}
                             </div>
                         </div>
 
