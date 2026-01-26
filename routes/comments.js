@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { authenticateToken } = require('../middleware/auth');
+const { createNotification } = require('../utils/notificationHelper');
 
 // Post a comment or reply
 router.post('/', authenticateToken, async (req, res) => {
@@ -25,6 +26,41 @@ router.post('/', authenticateToken, async (req, res) => {
        WHERE comments.id = ?`,
             [result.insertId]
         );
+
+        const comment = newCommentRows[0];
+
+        // Trigger Notifications
+        try {
+            const [itemRows] = await db.execute('SELECT title, uploaded_by FROM items WHERE id = ?', [item_id]);
+            const item = itemRows[0];
+
+            if (parent_comment_id) {
+                // It's a reply - notify the parent comment owner
+                const [parentRows] = await db.execute('SELECT user_id FROM comments WHERE id = ?', [parent_comment_id]);
+                const parentCommentOwner = parentRows[0].user_id;
+
+                if (parentCommentOwner !== userId) {
+                    await createNotification(
+                        parentCommentOwner,
+                        'reply',
+                        `${req.user.name} replied to your comment on "${item.title}".`,
+                        item_id
+                    );
+                }
+            } else {
+                // It's a new comment - notify the item owner
+                if (item.uploaded_by !== userId) {
+                    await createNotification(
+                        item.uploaded_by,
+                        'comment',
+                        `${req.user.name} commented on your item "${item.title}".`,
+                        item_id
+                    );
+                }
+            }
+        } catch (notifErr) {
+            console.error('Failed to trigger comment notification:', notifErr);
+        }
 
         res.status(201).json(newCommentRows[0]);
     } catch (err) {
