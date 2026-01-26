@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, ArrowLeft, MessageSquare, Send, CornerDownRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import ConfirmModal from '../components/ConfirmModal';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -26,6 +27,14 @@ export default function ItemDetails() {
     });
     const [newImageFile, setNewImageFile] = useState(null);
     const [newImagePreview, setNewImagePreview] = useState(null);
+    const [confirmModal, setConfirmModal] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        variant: 'blue',
+        onConfirm: () => { }
+    });
     const { user } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -110,87 +119,121 @@ export default function ItemDetails() {
         }
     };
 
-    const handleConfirmSale = async () => {
-        if (!window.confirm('Are you sure you want to mark this item as sold?')) return;
-
-        setConfirming(true);
-        try {
-            if (item.status?.toLowerCase() === 'reserved') {
-                // Confirm a specific reservation
-                await api.post(`/bookings/${item.booking_id}/confirm`);
-            } else {
-                // Direct mark as sold
-                await api.post(`/items/${id}/sold`);
+    const handleConfirmSale = () => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'Confirm Sale',
+            message: 'Are you sure you want to mark this item as sold?',
+            confirmText: 'Mark as Sold',
+            variant: 'green',
+            onConfirm: async () => {
+                setConfirming(true);
+                try {
+                    if (item.status?.toLowerCase() === 'reserved') {
+                        await api.post(`/bookings/${item.booking_id}/confirm`);
+                    } else {
+                        await api.post(`/items/${id}/sold`);
+                    }
+                    showToast('Item marked as sold successfully!', 'success');
+                    setItem(prev => ({ ...prev, status: 'sold' }));
+                } catch (err) {
+                    console.error('Confirm error:', err);
+                    showToast(err.response?.data?.error || 'Failed to mark item as sold', 'error');
+                } finally {
+                    setConfirming(false);
+                }
             }
-            showToast('Item marked as sold successfully!', 'success');
-            setItem(prev => ({ ...prev, status: 'sold' }));
-        } catch (err) {
-            console.error('Confirm error:', err);
-            showToast(err.response?.data?.error || 'Failed to mark item as sold', 'error');
-        } finally {
-            setConfirming(false);
-        }
+        });
     };
 
-    const handleReserve = async () => {
+    const handleReserve = () => {
         if (!user) {
             showToast('Please login to reserve items', 'warning');
             navigate('/login', { state: { from: `/items/${id}` } });
             return;
         }
 
-        if (window.confirm('Are you sure you want to reserve this item?')) {
-            setReserving(true);
-            try {
-                const { data } = await api.post(`/items/${id}/reserve`);
-                showToast(data.message || 'Reservation successful!', 'success');
-                // Re-fetch to get booking_id and other details
-                const itemRes = await api.get(`/items/${id}`);
-                setItem(itemRes.data);
-            } catch (err) {
-                console.error('Reserve error:', err);
-                showToast(err.response?.data?.error || 'Failed to reserve item', 'error');
-            } finally {
-                setReserving(false);
+        setConfirmModal({
+            isOpen: true,
+            title: 'Reserve Item',
+            message: 'Are you sure you want to reserve this item?',
+            confirmText: 'Reserve Now',
+            variant: 'blue',
+            onConfirm: async () => {
+                setReserving(true);
+                try {
+                    const { data } = await api.post(`/items/${id}/reserve`);
+                    showToast(data.message || 'Reservation successful!', 'success');
+                    const itemRes = await api.get(`/items/${id}`);
+                    setItem(itemRes.data);
+                } catch (err) {
+                    console.error('Reserve error:', err);
+                    showToast(err.response?.data?.error || 'Failed to reserve item', 'error');
+                } finally {
+                    setReserving(false);
+                }
             }
-        }
+        });
     };
 
-    const handleCancel = async () => {
-        if (!window.confirm('Are you sure you want to cancel this booking? The item will be available for others again.')) return;
-
-        try {
-            await api.post(`/bookings/${item.booking_id}/cancel`);
-            showToast('Booking cancelled successfully', 'success');
-            setItem(prev => ({ ...prev, status: 'available', booking_id: null, buyer_id: null, booking_status: null }));
-        } catch (err) {
-            console.error('Cancel error:', err);
-            showToast(err.response?.data?.error || 'Failed to cancel booking', 'error');
-        }
+    const handleCancel = () => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'Cancel Booking',
+            message: 'Are you sure you want to cancel this booking? The item will be available for others again.',
+            confirmText: 'Yes, Cancel',
+            variant: 'red',
+            onConfirm: async () => {
+                try {
+                    await api.post(`/bookings/${item.booking_id}/cancel`);
+                    showToast('Booking cancelled successfully', 'success');
+                    setItem(prev => ({ ...prev, status: 'available', booking_id: null, buyer_id: null, booking_status: null }));
+                } catch (err) {
+                    console.error('Cancel error:', err);
+                    showToast(err.response?.data?.error || 'Failed to cancel booking', 'error');
+                }
+            }
+        });
     };
 
-    const handleAccept = async () => {
-        if (!window.confirm('Accept this reservation request?')) return;
-        try {
-            await api.post(`/bookings/${item.booking_id}/accept`);
-            showToast('Reservation accepted!', 'success');
-            setItem(prev => ({ ...prev, status: 'reserved', booking_status: 'reserved' }));
-        } catch (err) {
-            console.error('Accept error:', err);
-            showToast(err.response?.data?.error || 'Failed to accept reservation', 'error');
-        }
+    const handleAccept = () => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'Accept Reservation',
+            message: 'Accept this reservation request?',
+            confirmText: 'Accept',
+            variant: 'green',
+            onConfirm: async () => {
+                try {
+                    await api.post(`/bookings/${item.booking_id}/accept`);
+                    showToast('Reservation accepted!', 'success');
+                    setItem(prev => ({ ...prev, status: 'reserved', booking_status: 'reserved' }));
+                } catch (err) {
+                    console.error('Accept error:', err);
+                    showToast(err.response?.data?.error || 'Failed to accept reservation', 'error');
+                }
+            }
+        });
     };
 
-    const handleReject = async () => {
-        if (!window.confirm('Reject this reservation request? The item will become available for others.')) return;
-        try {
-            await api.post(`/bookings/${item.booking_id}/reject`);
-            showToast('Reservation rejected', 'info');
-            setItem(prev => ({ ...prev, status: 'available', booking_id: null, buyer_id: null, booking_status: null }));
-        } catch (err) {
-            console.error('Reject error:', err);
-            showToast(err.response?.data?.error || 'Failed to reject reservation', 'error');
-        }
+    const handleReject = () => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'Reject Reservation',
+            message: 'Reject this reservation request? The item will become available for others.',
+            confirmText: 'Reject',
+            variant: 'red',
+            onConfirm: async () => {
+                try {
+                    await api.post(`/bookings/${item.booking_id}/reject`);
+                    showToast('Reservation rejected', 'info');
+                    setItem(prev => ({ ...prev, status: 'available', booking_id: null, buyer_id: null, booking_status: null }));
+                } catch (err) {
+                    console.error('Reject error:', err);
+                    showToast(err.response?.data?.error || 'Failed to reject reservation', 'error');
+                }
+            }
+        });
     };
 
     const handleEditItem = (e) => {
@@ -650,6 +693,16 @@ export default function ItemDetails() {
                     </div>
                 </div>
             )}
-        </div >
+
+            <ConfirmModal
+                isOpen={confirmModal.isOpen}
+                onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                confirmText={confirmModal.confirmText}
+                variant={confirmModal.variant}
+            />
+        </div>
     );
 }
