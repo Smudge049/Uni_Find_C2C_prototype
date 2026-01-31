@@ -36,11 +36,6 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// Serve frontend in production
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
