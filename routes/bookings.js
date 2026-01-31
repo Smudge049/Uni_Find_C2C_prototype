@@ -29,7 +29,10 @@ router.post('/:id/cancel', authenticateToken, async (req, res) => {
         res.json({ message: 'Booking cancelled and item is now available.' });
 
         // Notify the other party
-        if (userId === booking.seller_id) {
+        console.log(`[CancelBooking] User: ${userId}, Seller: ${booking.seller_id}, Buyer: ${booking.user_id}`);
+
+        if (userId == booking.seller_id) {
+            console.log('[CancelBooking] Seller cancelled. Notifying buyer.');
             // Seller cancelled, notify buyer
             await createNotification(
                 booking.user_id,
@@ -37,7 +40,8 @@ router.post('/:id/cancel', authenticateToken, async (req, res) => {
                 `Your reservation for "${booking.title || 'the item'}" has been cancelled by the seller.`,
                 booking.item_id
             );
-        } else if (userId === booking.user_id) {
+        } else if (userId == booking.user_id) {
+            console.log('[CancelBooking] Buyer cancelled. Notifying seller.');
             // Buyer cancelled, notify seller
             await createNotification(
                 booking.seller_id,
@@ -45,6 +49,8 @@ router.post('/:id/cancel', authenticateToken, async (req, res) => {
                 `The reservation for "${booking.title || 'the item'}" has been cancelled by the buyer.`,
                 booking.item_id
             );
+        } else {
+            console.log('[CancelBooking] No match for cancellation notification.');
         }
     } catch (err) {
         console.error('Cancel Booking error:', err);
