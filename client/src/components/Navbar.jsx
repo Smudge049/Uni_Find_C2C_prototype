@@ -138,7 +138,7 @@ export default function Navbar() {
                                                 className="h-8 w-8 rounded-full border-2 border-gray-700 hover:border-neon-blue hover:shadow-[0_0_8px_rgba(0,243,255,0.4)] transition-all duration-200"
                                             />
                                         ) : (
-                                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold hover:shadow-[0_0_8px_rgba(0,243,255,0.4)] transition-all duration-200">
+                                            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-neon-blue/80 to-blue-700 text-black font-black flex items-center justify-center hover:shadow-[0_0_8px_rgba(0,243,255,0.4)] transition-all duration-200">
                                                 {user.name?.[0]?.toUpperCase() || 'U'}
                                             </div>
                                         )}
@@ -176,7 +176,7 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 to="/login"
-                                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 font-bold transition-all duration-200 border border-white/10"
+                                className="bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black px-6 py-2 rounded-xl hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 font-black text-[10px] uppercase tracking-widest transition-all duration-200 border border-white/10"
                             >
                                 Sign In
                             </Link>

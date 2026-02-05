@@ -347,7 +347,7 @@ export default function ItemDetails() {
                             <div className="flex items-center mb-8 border-b border-gray-800/50 pb-6">
                                 <div className="relative">
                                     <div className="absolute inset-0 bg-neon-blue blur-lg opacity-20 group-hover/seller:opacity-40 transition-opacity"></div>
-                                    <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl overflow-hidden relative z-10 shadow-lg border border-white/10">
+                                    <div className="h-16 w-16 rounded-2xl bg-gradient-to-r from-neon-blue/80 to-blue-700/80 flex items-center justify-center text-black font-black text-2xl overflow-hidden relative z-10 shadow-lg border border-white/10">
                                         {item.seller_picture ? (
                                             <img src={item.seller_picture} alt="" className="w-full h-full object-cover" />
                                         ) : (
@@ -447,7 +447,7 @@ export default function ItemDetails() {
                                         </button>
                                         <button
                                             onClick={handleEditItem}
-                                            className="py-4 bg-gradient-to-r from-blue-600/20 to-white/5 text-white border border-white/10 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-white/10 active:scale-95 transition-all"
+                                            className="py-4 bg-gradient-to-r from-neon-blue/20 to-white/5 text-white border border-white/10 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-white/10 active:scale-95 transition-all"
                                         >
                                             Edit Ad
                                         </button>
@@ -709,7 +709,7 @@ export default function ItemDetails() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:shadow-lg active:scale-95 transition-all duration-300"
+                                    className="flex-1 py-4 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:shadow-lg active:scale-95 transition-all duration-300 border border-white/10"
                                 >
                                     Confirm Update
                                 </button>
