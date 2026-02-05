@@ -127,14 +127,13 @@ export default function Marketplace() {
                     {/* Price Range */}
                     <div>
                         <h4 className="font-medium text-gray-700 mb-3">Price Range (Rs)</h4>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 mb-2">
                             <input
                                 type="number"
                                 placeholder="Min"
                                 value={priceRange.min}
                                 onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                                onBlur={() => updateURL({ minPrice: priceRange.min })}
-                                onKeyDown={(e) => e.key === 'Enter' && updateURL({ minPrice: priceRange.min })}
+                                onKeyDown={(e) => e.key === 'Enter' && updateURL({ minPrice: priceRange.min, maxPrice: priceRange.max })}
                                 className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 outline-none"
                             />
                             <span className="text-gray-400">-</span>
@@ -143,11 +142,16 @@ export default function Marketplace() {
                                 placeholder="Max"
                                 value={priceRange.max}
                                 onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                                onBlur={() => updateURL({ maxPrice: priceRange.max })}
-                                onKeyDown={(e) => e.key === 'Enter' && updateURL({ maxPrice: priceRange.max })}
+                                onKeyDown={(e) => e.key === 'Enter' && updateURL({ minPrice: priceRange.min, maxPrice: priceRange.max })}
                                 className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 outline-none"
                             />
                         </div>
+                        <button
+                            onClick={() => updateURL({ minPrice: priceRange.min, maxPrice: priceRange.max })}
+                            className="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 active:scale-95 transition-all"
+                        >
+                            Apply Filter
+                        </button>
                     </div>
                 </div>
             </aside>
