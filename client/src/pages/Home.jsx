@@ -29,34 +29,44 @@ export default function Home() {
         fetchItems();
     }, []);
     return (
-        <div className="space-y-12">
+        <div className="space-y-16">
             {/* Hero Section */}
-            <section className="bg-blue-600 rounded-2xl p-8 md:p-12 text-center text-white relative overflow-hidden">
-                <div className="relative z-10 max-w-2xl mx-auto space-y-6 flex flex-col items-center">
-                    <img src="/logo.png" alt="UNI-find Logo" className="h-24 w-24 md:h-32 md:w-32 object-contain mx-auto" />
-                    <div className="space-y-2">
-                        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-                            Welcome to UNI-find
+            <section className="relative rounded-3xl p-10 md:p-20 text-center text-white overflow-hidden bg-gradient-to-br from-blue-900/40 to-purple-900/40 border border-white/10 shadow-2xl">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                <div className="relative z-10 max-w-3xl mx-auto space-y-8 flex flex-col items-center">
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-neon-blue blur-3xl opacity-20 animate-pulse"></div>
+                        <img src="/logo.png" alt="UNI-find Logo" className="h-28 w-28 md:h-40 md:w-40 object-contain mx-auto relative z-10 drop-shadow-[0_0_15px_rgba(0,243,255,0.6)]" />
+                    </div>
+                    <div className="space-y-4">
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-tight">
+                            Welcome to <span className="text-neon-blue drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">UNI-find</span>
                         </h1>
-                        <p className="text-lg text-blue-100">
-                            Where Students Connect, Trade, and Find.
+                        <p className="text-xl text-gray-300 font-medium max-w-xl mx-auto">
+                            The elite marketplace for Kathmandu University students to connect and trade.
                         </p>
                     </div>
+                    <Link to="/marketplace" className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-black text-lg hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/20">
+                        Explore Marketplace
+                    </Link>
                 </div>
             </section>
 
             {/* Categories */}
             <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Browse by Category</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="flex items-center space-x-3 mb-8">
+                    <div className="h-8 w-1.5 bg-neon-blue rounded-full shadow-[0_0_8px_rgba(0,243,255,0.8)]"></div>
+                    <h2 className="text-3xl font-black text-white tracking-tight">Browse Categories</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                     {CATEGORIES.map((cat) => (
                         <Link
                             key={cat.name}
                             to={`/marketplace?category=${cat.name}`}
-                            className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100 group block"
+                            className="bg-card-bg/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-neon-blue/20 hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-gray-800 hover:border-neon-blue/50 group block"
                         >
-                            <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
-                            <h3 className="font-medium text-gray-900">{cat.name}</h3>
+                            <div className="text-4xl mb-4 group-hover:scale-125 group-hover:drop-shadow-[0_0_10px_rgba(0,243,255,0.4)] transition-all duration-300">{cat.icon}</div>
+                            <h3 className="font-bold text-gray-300 group-hover:text-white transition-colors">{cat.name}</h3>
                         </Link>
                     ))}
                 </div>
@@ -64,17 +74,24 @@ export default function Home() {
 
             {/* Recent Listings */}
             <section>
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">Recently Listed</h2>
-                    <a href="/marketplace" className="text-blue-600 font-medium hover:text-blue-700">View All &rarr;</a>
+                <div className="flex justify-between items-end mb-8">
+                    <div className="flex items-center space-x-3">
+                        <div className="h-8 w-1.5 bg-neon-purple rounded-full shadow-[0_0_8px_rgba(188,19,254,0.8)]"></div>
+                        <h2 className="text-3xl font-black text-white tracking-tight">Recently Listed</h2>
+                    </div>
+                    <Link to="/marketplace" className="text-neon-blue font-bold hover:text-white transition-colors flex items-center group">
+                        View All <span className="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </Link>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {recentItems.length > 0 ? (
                         recentItems.map((item) => (
                             <ItemCard key={item.id} item={item} />
                         ))
                     ) : (
-                        <p className="col-span-full text-center text-gray-500">No items listed yet.</p>
+                        <div className="col-span-full py-20 bg-card-bg/40 rounded-3xl border border-dashed border-gray-800 text-center">
+                            <p className="text-gray-500 font-medium">No items listed yet in the campus ecosystem.</p>
+                        </div>
                     )}
                 </div>
             </section>

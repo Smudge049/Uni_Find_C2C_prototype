@@ -15,7 +15,7 @@ function App() {
   return (
     <ToastProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+        <div className="min-h-screen bg-dark-bg text-white font-sans selection:bg-neon-blue/30">
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
