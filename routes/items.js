@@ -72,7 +72,7 @@ router.put('/:id', authenticateToken, upload.array('images', 1), async (req, res
 // Get All Items
 router.get('/', async (req, res) => {
     try {
-        const { category, search, maxPrice } = req.query;
+        const { category, search, minPrice, maxPrice } = req.query;
         let query = 'SELECT items.*, users.name as seller_name, users.picture as seller_picture FROM items JOIN users ON items.uploaded_by = users.id WHERE items.status IN ("available", "pending", "reserved")';
         const params = [];
 
@@ -83,6 +83,10 @@ router.get('/', async (req, res) => {
         if (search) {
             query += ' AND (title LIKE ? OR description LIKE ?)';
             params.push(`%${search}%`, `%${search}%`);
+        }
+        if (minPrice) {
+            query += ' AND price >= ?';
+            params.push(minPrice);
         }
         if (maxPrice) {
             query += ' AND price <= ?';

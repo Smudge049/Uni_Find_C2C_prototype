@@ -11,29 +11,11 @@ export default function Marketplace() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
-    const [maxPrice, setMaxPrice] = useState(5000);
-    const [sliderMax, setSliderMax] = useState(20000);
+    const [priceRange, setPriceRange] = useState({ min: '', max: '' });
     const location = useLocation();
     const navigate = useNavigate();
 
     const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-    // Fetch Max Price on Mount
-    useEffect(() => {
-        const fetchMaxPrice = async () => {
-            try {
-                const { data } = await api.get('/items/max-price');
-                const fetchedMax = Math.ceil(parseFloat(data.maxPrice));
-                setSliderMax(fetchedMax);
-
-                // If url doesn't have maxPrice, verify if we should adjust current maxPrice state?
-                // Actually, just setting sliderMax is enough for the range limit.
-            } catch (err) {
-                console.error("Failed to fetch max price", err);
-            }
-        };
-        fetchMaxPrice();
-    }, []);
 
     const updateURL = (newParams) => {
         const params = new URLSearchParams(location.search);
@@ -45,7 +27,7 @@ export default function Marketplace() {
             }
         });
         navigate(`/marketplace?${params.toString()}`, { replace: true });
-        setShowMobileFilters(false); // Close mobile filters on selection
+        setShowMobileFilters(false);
     };
 
     // Sync URL -> State and Fetch
@@ -53,29 +35,31 @@ export default function Marketplace() {
         const params = new URLSearchParams(location.search);
         const categoryParam = params.get('category') || 'All';
         const searchParam = params.get('search') || '';
-        const priceParam = params.get('maxPrice') || '5000';
+        const minPriceParam = params.get('minPrice') || '';
+        const maxPriceParam = params.get('maxPrice') || '';
 
         // Find matching category case-insensitively
         const match = CATEGORIES.find(c => c.toLowerCase() === categoryParam.toLowerCase()) || 'All';
 
         setSelectedCategory(match);
         setSearchTerm(searchParam);
-        setMaxPrice(parseInt(priceParam));
+        setPriceRange({ min: minPriceParam, max: maxPriceParam });
 
         const debounceTimer = setTimeout(() => {
-            fetchFilteredItems(match, searchParam, parseInt(priceParam));
+            fetchFilteredItems(match, searchParam, minPriceParam, maxPriceParam);
         }, 300);
 
         return () => clearTimeout(debounceTimer);
     }, [location.search]);
 
-    const fetchFilteredItems = async (category, search, price) => {
+    const fetchFilteredItems = async (category, search, min, max) => {
         setLoading(true);
         try {
             const params = {};
             if (category !== 'All') params.category = category;
             if (search) params.search = search;
-            if (price) params.maxPrice = price;
+            if (min) params.minPrice = min;
+            if (max) params.maxPrice = max;
 
             const { data } = await api.get('/items', { params });
             setItems(data);
@@ -85,6 +69,7 @@ export default function Marketplace() {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="flex flex-col lg:flex-row gap-8 relative">
@@ -141,19 +126,28 @@ export default function Marketplace() {
 
                     {/* Price Range */}
                     <div>
-                        <div className="flex justify-between mb-2">
-                            <h4 className="font-medium text-gray-700">Max Price</h4>
-                            <span className="text-sm text-gray-500">Rs {maxPrice}</span>
+                        <h4 className="font-medium text-gray-700 mb-3">Price Range (Rs)</h4>
+                        <div className="flex items-center space-x-2">
+                            <input
+                                type="number"
+                                placeholder="Min"
+                                value={priceRange.min}
+                                onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                                onBlur={() => updateURL({ minPrice: priceRange.min })}
+                                onKeyDown={(e) => e.key === 'Enter' && updateURL({ minPrice: priceRange.min })}
+                                className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 outline-none"
+                            />
+                            <span className="text-gray-400">-</span>
+                            <input
+                                type="number"
+                                placeholder="Max"
+                                value={priceRange.max}
+                                onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                                onBlur={() => updateURL({ maxPrice: priceRange.max })}
+                                onKeyDown={(e) => e.key === 'Enter' && updateURL({ maxPrice: priceRange.max })}
+                                className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-blue-500 outline-none"
+                            />
                         </div>
-                        <input
-                            type="range"
-                            min="0"
-                            max={sliderMax}
-                            step="500"
-                            value={maxPrice}
-                            onChange={(e) => updateURL({ maxPrice: e.target.value })}
-                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                        />
                     </div>
                 </div>
             </aside>
