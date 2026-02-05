@@ -23,7 +23,7 @@ CREATE TABLE items (
   category enum('books','furniture','clothing','sports','stationery','electronics','other') NOT NULL,
   item_condition enum('new','decent','too old') NOT NULL,
   uploaded_by char(36) NOT NULL, -- Back to uploaded_by from user_id
-  price decimal(10,2) NOT NULL,
+  price decimal(10,2) NOT NULL CHECK (price > 0),
   image_url varchar(255) NOT NULL, -- User used 'image_path', code uses 'image_url'. I'll keep image_url to avoid breaking Frontend, or check.
   created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   quantity int DEFAULT '1',

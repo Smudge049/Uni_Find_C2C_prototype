@@ -627,8 +627,15 @@ export default function ItemDetails() {
                                     <input
                                         type="number"
                                         required
+                                        min="0"
+                                        step="0.01"
                                         value={editForm.price}
-                                        onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '' || parseFloat(val) >= 0) {
+                                                setEditForm({ ...editForm, price: val });
+                                            }
+                                        }}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                     />
                                 </div>

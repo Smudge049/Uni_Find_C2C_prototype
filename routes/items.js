@@ -9,6 +9,11 @@ const { createNotification } = require('../utils/notificationHelper');
 router.post('/', authenticateToken, upload.array('images', 5), async (req, res) => {
     try {
         const { title, description, price, category } = req.body;
+
+        if (parseFloat(price) <= 0) {
+            return res.status(400).json({ error: 'Price must be a positive number' });
+        }
+
         const userId = req.user.id;
         const imageUrl = req.files.length > 0 ? `/uploads/${req.files[0].filename}` : null;
 
@@ -30,6 +35,11 @@ router.put('/:id', authenticateToken, upload.array('images', 1), async (req, res
         const itemId = req.params.id;
         const userId = req.user.id;
         const { title, description, price, category } = req.body;
+
+        if (parseFloat(price) <= 0) {
+            return res.status(400).json({ error: 'Price must be a positive number' });
+        }
+
         const imageUrl = req.files && req.files.length > 0 ? `/uploads/${req.files[0].filename}` : null;
 
         const [items] = await db.execute('SELECT * FROM items WHERE id = ?', [itemId]);
