@@ -260,6 +260,10 @@ export default function ItemDetails() {
     const handleUpdateItem = async (e) => {
         e.preventDefault();
         try {
+            if (parseFloat(editForm.price) <= 0) {
+                showToast('Price must be a positive number', 'error');
+                return;
+            }
             const formData = new FormData();
             formData.append('title', editForm.title);
             formData.append('description', editForm.description);
