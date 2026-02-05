@@ -2,10 +2,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
+import { Mail, User as UserIcon, Lock, AlertCircle } from 'lucide-react';
 
 export default function Register() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
+    const [otp, setOtp] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
