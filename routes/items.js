@@ -73,6 +73,7 @@ router.put('/:id', authenticateToken, upload.array('images', 1), async (req, res
 router.get('/', async (req, res) => {
     try {
         const { category, search, minPrice, maxPrice } = req.query;
+        console.log('GET /items params:', req.query);
         let query = 'SELECT items.*, users.name as seller_name, users.picture as seller_picture FROM items JOIN users ON items.uploaded_by = users.id WHERE items.status IN ("available", "pending", "reserved")';
         const params = [];
 
@@ -94,6 +95,9 @@ router.get('/', async (req, res) => {
         }
 
         query += ' ORDER BY created_at DESC';
+
+        console.log('Executing query:', query);
+        console.log('With params:', params);
 
         const [items] = await db.execute(query, params);
         res.json(items);
