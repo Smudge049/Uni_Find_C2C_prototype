@@ -21,8 +21,8 @@ export default function ItemCard({ item }) {
     };
 
     return (
-        <Link to={`/items/${item.id}`} className="block">
-            <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 cursor-pointer">
+        <Link to={`/items/${item.id}`} className="block group">
+            <div className="bg-card-bg rounded-xl shadow-lg hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-800/50 cursor-pointer">
                 <div className="bg-gray-200 h-48 w-full relative">
                     <img
                         src={item.image_url || item.image || "https://placehold.co/400x300"}
@@ -57,16 +57,16 @@ export default function ItemCard({ item }) {
                 </div>
                 <div className="p-4">
                     <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">{item.title}</h3>
-                        <span className="text-blue-600 font-bold whitespace-nowrap">Rs {item.price}</span>
+                        <h3 className="text-lg font-semibold text-white truncate pr-2 group-hover:text-neon-blue transition-colors">{item.title}</h3>
+                        <span className="text-neon-green font-bold whitespace-nowrap">Rs {item.price}</span>
                     </div>
-                    <p className="text-sm text-gray-500 mt-1 truncate">{item.description}</p>
+                    <p className="text-sm text-gray-400 mt-1 truncate">{item.description}</p>
 
                     <div className="mt-4 flex justify-between items-center">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-neon-blue border border-neon-blue/30">
                             {item.category}
                         </span>
-                        <span className="text-xs text-gray-400">{getTimeAgo(item.created_at)}</span>
+                        <span className="text-xs text-gray-500">{getTimeAgo(item.created_at)}</span>
                     </div>
                 </div>
             </div>
