@@ -12,10 +12,28 @@ export default function Marketplace() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [maxPrice, setMaxPrice] = useState(5000);
+    const [sliderMax, setSliderMax] = useState(20000);
     const location = useLocation();
     const navigate = useNavigate();
 
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+    // Fetch Max Price on Mount
+    useEffect(() => {
+        const fetchMaxPrice = async () => {
+            try {
+                const { data } = await api.get('/items/max-price');
+                const fetchedMax = Math.ceil(parseFloat(data.maxPrice));
+                setSliderMax(fetchedMax);
+
+                // If url doesn't have maxPrice, verify if we should adjust current maxPrice state?
+                // Actually, just setting sliderMax is enough for the range limit.
+            } catch (err) {
+                console.error("Failed to fetch max price", err);
+            }
+        };
+        fetchMaxPrice();
+    }, []);
 
     const updateURL = (newParams) => {
         const params = new URLSearchParams(location.search);
@@ -130,7 +148,7 @@ export default function Marketplace() {
                         <input
                             type="range"
                             min="0"
-                            max="20000"
+                            max={sliderMax}
                             step="500"
                             value={maxPrice}
                             onChange={(e) => updateURL({ maxPrice: e.target.value })}

@@ -98,6 +98,18 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get Max Price
+router.get('/max-price', async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT MAX(price) as max_price FROM items WHERE status IN ("available", "pending", "reserved")');
+        const maxPrice = rows[0].max_price || 20000; // Default if no items
+        res.json({ maxPrice });
+    } catch (err) {
+        console.error('Error fetching max price:', err);
+        res.status(500).json({ error: 'Failed to fetch max price' });
+    }
+});
+
 // Get Item Details
 router.get('/:id', async (req, res) => {
     try {
