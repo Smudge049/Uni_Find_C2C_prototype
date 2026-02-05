@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { User, PlusCircle, Search, LogOut, Bell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
@@ -13,6 +13,7 @@ export default function Navbar() {
     const [notifications, setNotifications] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         if (!user) {
@@ -90,7 +91,13 @@ export default function Navbar() {
 
                     {/* Right Actions */}
                     <div className="flex items-center space-x-4">
-                        <Link to="/marketplace" className="text-gray-400 hover:text-neon-blue font-medium transition-colors duration-200">
+                        <Link
+                            to="/marketplace"
+                            className={`transition-all duration-300 font-black uppercase tracking-widest text-[10px] ${location.pathname === '/marketplace'
+                                    ? 'text-neon-blue drop-shadow-[0_0_8px_rgba(0,243,255,0.8)]'
+                                    : 'text-gray-400 hover:text-neon-blue'
+                                }`}
+                        >
                             Marketplace
                         </Link>
 
@@ -105,9 +112,12 @@ export default function Navbar() {
                                 <div className="relative">
                                     <button
                                         onClick={() => setShowNotifications(!showNotifications)}
-                                        className="p-2 text-gray-400 hover:text-neon-blue hover:bg-white/5 rounded-full transition relative group"
+                                        className={`p-2 rounded-full transition relative group ${showNotifications
+                                                ? 'text-neon-blue bg-white/10 drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]'
+                                                : 'text-gray-400 hover:text-neon-blue hover:bg-white/5'
+                                            }`}
                                     >
-                                        <Bell className="h-6 w-6" />
+                                        <Bell className={`h-6 w-6 transition-all ${showNotifications ? 'scale-110' : ''}`} />
                                         {unreadCount > 0 && (
                                             <span className="absolute top-1 right-1 h-4 w-4 bg-red-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-card-bg">
                                                 {unreadCount > 9 ? '9+' : unreadCount}
