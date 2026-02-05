@@ -250,7 +250,7 @@ export default function Profile() {
                                     <button
                                         type="button"
                                         onClick={handleRemoveImage}
-                                        className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:text-red-400 bg-red-500/5 py-2 px-4 rounded-full border border-red-500/10 transition-all hover:bg-red-500/10"
+                                        className="text-[10px] font-black uppercase tracking-widest text-black bg-gradient-to-r from-red-500/80 to-red-800/80 hover:from-red-500 hover:to-red-800 py-2 px-6 rounded-full border border-white/10 transition-all shadow-lg active:scale-95"
                                     >
                                         Remove Picture
                                     </button>
@@ -272,7 +272,7 @@ export default function Profile() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 py-4 px-6 bg-gradient-to-r from-neon-blue to-blue-700 text-black font-black uppercase tracking-widest text-[10px] rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:shadow-[0_0_30px_rgba(0,243,255,0.5)] transition-all active:scale-95"
+                                    className="flex-1 py-4 px-6 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black font-black uppercase tracking-widest text-[10px] rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:shadow-[0_0_30px_rgba(0,243,255,0.5)] transition-all active:scale-95 border border-white/10"
                                 >
                                     Save Changes
                                 </button>

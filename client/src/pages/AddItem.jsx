@@ -190,7 +190,7 @@ export default function AddItem() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-black text-lg hover:shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 order-1 sm:order-2 border border-white/10"
+                        className="px-10 py-4 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 text-black rounded-xl font-black text-[10px] uppercase tracking-widest hover:shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 order-1 sm:order-2 border border-white/10"
                     >
                         {loading ? 'Processing...' : 'Post Ad Now'}
                     </button>

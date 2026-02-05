@@ -39,13 +39,13 @@ export default function NotificationDropdown({ notifications, onMarkAsRead, onMa
     return (
         <div className="absolute right-0 mt-4 w-80 bg-card-bg/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden z-[100] animate-in slide-in-from-top-2 duration-300">
             <div className="p-5 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h3 className="font-black text-white uppercase tracking-tighter text-sm">Intel Stream</h3>
+                <h3 className="font-black text-white uppercase tracking-tighter text-sm">Notifications</h3>
                 {notifications.length > 0 && (
                     <button
                         onClick={onMarkAllAsRead}
                         className="text-[10px] text-neon-blue hover:text-white font-black uppercase tracking-widest transition-colors"
                     >
-                        Purge All
+                        mark all as read
                     </button>
                 )}
             </div>

@@ -96,7 +96,7 @@ export default function Navbar() {
 
                         {user ? (
                             <>
-                                <Link to="/sell" className="flex items-center space-x-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] active:scale-95 transition-all duration-200 font-bold border border-white/10">
+                                <Link to="/sell" className="flex items-center space-x-2 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black px-6 py-2.5 rounded-xl hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 font-black text-[10px] uppercase tracking-widest border border-white/10">
                                     <PlusCircle className="h-4 w-4" />
                                     <span>Post Item</span>
                                 </Link>

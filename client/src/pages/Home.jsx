@@ -46,7 +46,7 @@ export default function Home() {
                             The elite marketplace for Kathmandu University students to connect and trade.
                         </p>
                     </div>
-                    <Link to="/marketplace" className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-black text-lg hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/20">
+                    <Link to="/marketplace" className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 text-black rounded-full font-black text-lg hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/20">
                         Explore Marketplace
                     </Link>
                 </div>

@@ -381,13 +381,13 @@ export default function ItemDetails() {
                                             <div className="flex gap-3">
                                                 <button
                                                     onClick={handleAccept}
-                                                    className="flex-1 py-3 bg-neon-green/10 border border-neon-green/30 text-neon-green hover:bg-neon-green/20 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300"
+                                                    className="flex-1 py-3 bg-gradient-to-r from-neon-green/80 to-green-700/80 hover:from-neon-green hover:to-green-700 text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 border border-white/10 shadow-lg active:scale-95"
                                                 >
                                                     Accept
                                                 </button>
                                                 <button
                                                     onClick={handleReject}
-                                                    className="flex-1 py-3 bg-red-900/10 border border-red-900/30 text-red-400 hover:bg-red-950/20 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300"
+                                                    className="flex-1 py-3 bg-gradient-to-r from-red-500/80 to-red-800/80 hover:from-red-500 hover:to-red-800 text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 border border-white/10 shadow-lg active:scale-95"
                                                 >
                                                     Reject
                                                 </button>
@@ -417,7 +417,7 @@ export default function ItemDetails() {
                                             <button
                                                 onClick={handleConfirmSale}
                                                 disabled={confirming}
-                                                className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-black uppercase tracking-widest text-sm hover:shadow-[0_0_15px_rgba(57,255,20,0.2)] active:scale-95 transition-all disabled:opacity-50"
+                                                className="w-full py-4 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 text-black rounded-xl font-black uppercase tracking-widest text-sm hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] active:scale-95 transition-all disabled:opacity-50 border border-white/10"
                                             >
                                                 {confirming ? 'Confirming...' : 'Mark as Sold'}
                                             </button>
@@ -441,13 +441,13 @@ export default function ItemDetails() {
                                         <button
                                             onClick={handleConfirmSale}
                                             disabled={confirming}
-                                            className="py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:shadow-lg active:scale-95 transition-all disabled:opacity-50"
+                                            className="py-4 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:shadow-lg active:scale-95 transition-all disabled:opacity-50 border border-white/10"
                                         >
                                             {confirming ? '...' : 'Mark Sold'}
                                         </button>
                                         <button
                                             onClick={handleEditItem}
-                                            className="py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:shadow-lg active:scale-95 transition-all"
+                                            className="py-4 bg-gradient-to-r from-blue-600/20 to-white/5 text-white border border-white/10 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-white/10 active:scale-95 transition-all"
                                         >
                                             Edit Ad
                                         </button>
@@ -458,7 +458,7 @@ export default function ItemDetails() {
                                     <button
                                         onClick={handleReserve}
                                         disabled={reserving}
-                                        className="w-full py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl hover:shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 border border-white/10"
+                                        className="w-full py-5 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 text-black rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl hover:shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 border border-white/10"
                                     >
                                         {reserving ? 'Processing...' : 'Reserve This Item'}
                                     </button>
@@ -495,7 +495,7 @@ export default function ItemDetails() {
                                     <button
                                         type="submit"
                                         disabled={!user || !newComment.trim() || submittingComment}
-                                        className="inline-flex items-center px-10 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50"
+                                        className="inline-flex items-center px-10 py-3.5 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black rounded-xl font-black uppercase tracking-widest text-[10px] hover:shadow-[0_0_20px_rgba(0,243,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 border border-white/10"
                                     >
                                         <Send className="h-4 w-4 mr-2" />
                                         {submittingComment ? 'Transmitting...' : 'Post Comment'}

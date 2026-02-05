@@ -224,7 +224,7 @@ export default function Register() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full flex justify-center py-4 px-4 border border-white/10 rounded-xl shadow-lg text-sm font-black text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-neon-blue/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-50"
+                        className="w-full flex justify-center py-4 px-4 border border-white/10 rounded-xl shadow-lg text-[10px] font-black uppercase tracking-widest text-black bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 hover:shadow-neon-blue/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-50"
                     >
                         {loading ? (
                             <div className="flex items-center gap-2">

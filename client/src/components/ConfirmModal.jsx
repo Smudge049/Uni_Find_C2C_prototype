@@ -15,25 +15,25 @@ export default function ConfirmModal({
 
     const variantStyles = {
         blue: {
-            bg: 'bg-neon-blue',
+            bg: 'bg-gradient-to-r from-neon-blue/80 to-blue-700/80',
             text: 'text-black',
-            hover: 'hover:bg-white',
+            hover: 'hover:from-neon-blue hover:to-blue-700',
             shadow: 'shadow-[0_0_20px_rgba(0,243,255,0.3)]',
             icon: <AlertCircle className="h-6 w-6 text-neon-blue" />,
             iconBg: 'bg-neon-blue/10'
         },
         red: {
-            bg: 'bg-red-600',
-            text: 'text-white',
-            hover: 'hover:bg-red-500',
+            bg: 'bg-gradient-to-r from-red-500/80 to-red-800/80',
+            text: 'text-black',
+            hover: 'hover:from-red-500 hover:to-red-800',
             shadow: 'shadow-[0_0_20px_rgba(220,38,38,0.3)]',
             icon: <AlertCircle className="h-6 w-6 text-red-500" />,
             iconBg: 'bg-red-500/10'
         },
         green: {
-            bg: 'bg-neon-green',
+            bg: 'bg-gradient-to-r from-neon-green/80 to-green-700/80',
             text: 'text-black',
-            hover: 'hover:bg-white',
+            hover: 'hover:from-neon-green hover:to-green-700',
             shadow: 'shadow-[0_0_20px_rgba(57,255,20,0.3)]',
             icon: <CheckCircle2 className="h-6 w-6 text-neon-green" />,
             iconBg: 'bg-neon-green/10'
