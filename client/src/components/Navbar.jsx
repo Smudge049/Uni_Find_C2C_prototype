@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { User, PlusCircle, Search, LogOut, Bell } from 'lucide-react';
+import { User, PlusCircle, Search, LogOut, Bell, LayoutDashboard as Store } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -71,7 +71,7 @@ export default function Navbar() {
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-2 group">
                         <img src="/logo.png" alt="UNI-find Logo" className="h-10 w-10 object-contain group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(0,243,255,0.6)] transition-all duration-300" />
-                        <span className="text-2xl font-black text-neon-blue drop-shadow-[0_0_3px_rgba(0,243,255,0.4)] tracking-tight">UNI-find</span>
+                        <span className="text-2xl font-black text-neon-blue drop-shadow-[0_0_3px_rgba(0,243,255,0.4)] tracking-tight hidden sm:block">UNI-find</span>
                     </Link>
 
                     {/* Center Search */}
@@ -90,22 +90,24 @@ export default function Navbar() {
                     </div>
 
                     {/* Right Actions */}
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2 sm:space-x-4">
                         <Link
                             to="/marketplace"
-                            className={`transition-all duration-300 font-black uppercase tracking-widest text-[10px] ${location.pathname === '/marketplace'
-                                    ? 'text-neon-blue drop-shadow-[0_0_8px_rgba(0,243,255,0.8)]'
-                                    : 'text-gray-400 hover:text-neon-blue'
+                            className={`flex items-center transition-all duration-300 font-black uppercase tracking-widest text-[10px] ${location.pathname === '/marketplace'
+                                ? 'text-neon-blue drop-shadow-[0_0_8px_rgba(0,243,255,0.8)]'
+                                : 'text-gray-400 hover:text-neon-blue'
                                 }`}
+                            title="Marketplace"
                         >
-                            Marketplace
+                            <Store className="h-5 w-5 sm:mr-2" />
+                            <span className="hidden md:inline">Marketplace</span>
                         </Link>
 
                         {user ? (
                             <>
-                                <Link to="/sell" className="flex items-center space-x-2 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black px-6 py-2.5 rounded-xl hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 font-black text-[10px] uppercase tracking-widest border border-white/10">
+                                <Link to="/sell" className="flex items-center space-x-2 bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black px-3 sm:px-6 py-2.5 rounded-xl hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 font-black text-[10px] uppercase tracking-widest border border-white/10" title="Post Item">
                                     <PlusCircle className="h-4 w-4" />
-                                    <span>Post Item</span>
+                                    <span className="hidden md:inline">Post Item</span>
                                 </Link>
 
                                 {/* Notifications */}
@@ -113,8 +115,8 @@ export default function Navbar() {
                                     <button
                                         onClick={() => setShowNotifications(!showNotifications)}
                                         className={`p-2 rounded-full transition relative group ${showNotifications
-                                                ? 'text-neon-blue bg-white/10 drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]'
-                                                : 'text-gray-400 hover:text-neon-blue hover:bg-white/5'
+                                            ? 'text-neon-blue bg-white/10 drop-shadow-[0_0_8px_rgba(0,243,255,0.5)]'
+                                            : 'text-gray-400 hover:text-neon-blue hover:bg-white/5'
                                             }`}
                                     >
                                         <Bell className={`h-6 w-6 transition-all ${showNotifications ? 'scale-110' : ''}`} />
@@ -186,7 +188,7 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 to="/login"
-                                className="bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black px-6 py-2 rounded-xl hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 font-black text-[10px] uppercase tracking-widest transition-all duration-200 border border-white/10"
+                                className="bg-gradient-to-r from-neon-blue/80 to-blue-700/80 hover:from-neon-blue hover:to-blue-700 text-black px-4 sm:px-6 py-2 rounded-xl hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 font-black text-[10px] uppercase tracking-widest transition-all duration-200 border border-white/10"
                             >
                                 Sign In
                             </Link>
