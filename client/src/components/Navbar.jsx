@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { User, PlusCircle, Search, LogOut, Bell, LayoutDashboard as Store } from 'lucide-react';
+import { User, PlusCircle, Search, LogOut, Bell, LayoutDashboard as Store, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ export default function Navbar() {
     const { user, logout } = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showMobileSearch, setShowMobileSearch] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
@@ -74,7 +75,7 @@ export default function Navbar() {
                         <span className="text-2xl font-black text-neon-blue drop-shadow-[0_0_3px_rgba(0,243,255,0.4)] tracking-tight hidden sm:block">UNI-find</span>
                     </Link>
 
-                    {/* Center Search */}
+                    {/* Center Search (Desktop) */}
                     <div className="hidden md:flex flex-1 max-w-lg mx-8 relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Search className="h-5 w-5 text-gray-500" />
@@ -102,6 +103,14 @@ export default function Navbar() {
                             <Store className="h-5 w-5 sm:mr-2" />
                             <span className="hidden md:inline">Marketplace</span>
                         </Link>
+
+                        <button
+                            onClick={() => setShowMobileSearch(!showMobileSearch)}
+                            className="md:hidden p-2 text-gray-400 hover:text-neon-blue transition-colors"
+                            title="Search"
+                        >
+                            <Search className="h-6 w-6" />
+                        </button>
 
                         {user ? (
                             <>
@@ -195,6 +204,35 @@ export default function Navbar() {
                         )}
                     </div>
                 </div>
+
+                {/* Mobile Search Bar */}
+                {showMobileSearch && (
+                    <div className="md:hidden pb-4 px-2 animate-in slide-in-from-top duration-200">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search className="h-5 w-5 text-gray-500" />
+                            </div>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    handleSearch(e);
+                                    if (e.key === 'Enter') setShowMobileSearch(false);
+                                }}
+                                className="block w-full pl-10 pr-10 py-2.5 border border-gray-700 rounded-xl leading-5 bg-dark-bg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-blue focus:border-neon-blue text-sm transition-all shadow-lg"
+                                placeholder="Search for items..."
+                                autoFocus
+                            />
+                            <button
+                                onClick={() => setShowMobileSearch(false)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-white"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Click outside to close dropdowns */}
